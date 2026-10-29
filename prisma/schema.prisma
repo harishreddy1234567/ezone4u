@@ -1,0 +1,162 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+model AdminUser {
+  id           String   @id @default(cuid())
+  name         String
+  email        String   @unique
+  passwordHash String
+  role         String   @default("ADMIN")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("user")
+}
+
+model Category {
+  id        String    @id @default(cuid())
+  name      String
+  slug      String    @unique
+  parentId  String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  products  Product[]
+
+  @@map("category")
+}
+
+model Product {
+  id          String           @id @default(cuid())
+  name        String
+  slug        String           @unique
+  description String?          @db.Text
+  price       Decimal          @db.Decimal(10, 2)
+  material    String?
+  careGuide   String?          @db.Text
+  stock       Int              @default(0)
+  status      String           @default("ACTIVE")
+  categoryId  String
+  category    Category         @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  images      ProductImage[]
+  variants    ProductVariant[]
+  orderItems  OrderItem[]
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  @@index([categoryId])
+  @@map("product")
+}
+
+model ProductImage {
+  id           String   @id @default(cuid())
+  productId    String
+  product      Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  url          String   @map("imageUrl") @db.Text
+  displayOrder Int      @default(0) @map("sortOrder")
+  createdAt    DateTime @default(now())
+
+  @@index([productId])
+  @@map("productimage")
+}
+
+model ProductVariant {
+  id            String      @id @default(cuid())
+  productId     String
+  product       Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
+  size          String
+  color         String?     @default("")
+  stockQuantity Int         @default(0) @map("stock")
+  orderItems    OrderItem[]
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  @@index([productId])
+  @@map("productvariant")
+}
+
+enum OrderStatus {
+  PLACED
+  PENDING
+  CONFIRMED
+  PROCESSING
+  SHIPPED
+  OUT_FOR_DELIVERY
+  DELIVERED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  CANCELLED
+  FAILED
+  REFUNDED
+}
+
+model Order {
+  id              String           @id @default(cuid())
+  orderNumber     String           @unique
+  userId          String?
+  customerName    String?
+  customerEmail   String?
+  customerPhone   String?
+  status          OrderStatus      @default(PLACED)
+  paymentStatus   PaymentStatus    @default(PENDING)
+  shippingStatus  String           @default("NOT_SHIPPED")
+  subtotal        Decimal          @db.Decimal(10, 2)
+  shippingFee     Decimal          @default(0.00) @map("shippingAmount") @db.Decimal(10, 2)
+  totalAmount     Decimal          @db.Decimal(10, 2)
+  currency        String           @default("INR")
+  deliveryaddress deliveryaddress?
+  items           OrderItem[]
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  @@map("order")
+}
+
+model deliveryaddress {
+  id           String   @id @default(cuid())
+  orderId      String   @unique
+  fullName     String
+  mobile       String
+  addressLine1 String
+  addressLine2 String?
+  city         String
+  state        String
+  postalCode   String
+  country      String   @default("India")
+  email        String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  order        Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@map("deliveryaddress")
+}
+
+model OrderItem {
+  id               String          @id @default(cuid())
+  orderId          String
+  order            Order           @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId        String?
+  product          Product?        @relation(fields: [productId], references: [id], onDelete: Restrict)
+  productVariantId String?
+  productVariant   ProductVariant? @relation(fields: [productVariantId], references: [id], onDelete: SetNull)
+  productName      String
+  size             String?         @map("variantSize")
+  color            String?         @map("variantColor")
+  unitPrice        Decimal         @db.Decimal(10, 2)
+  quantity         Int             @default(1)
+  subtotal         Decimal         @map("lineTotal") @db.Decimal(10, 2)
+
+  @@index([orderId])
+  @@index([productId])
+  @@index([productVariantId])
+  @@map("orderitem")
+}

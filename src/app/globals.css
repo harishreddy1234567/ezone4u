@@ -1,0 +1,146 @@
+@import "tailwindcss";
+
+@theme {
+  --color-cream: #FAF7F2;
+  --color-cream-light: #FDFBF7;
+  --color-ivory: #FFFDF9;
+  --color-beige: #F4EFEA;
+  --color-beige-dark: #E8DFD8;
+  --color-sand: #DDD4CA;
+  --color-sand-light: #EADECE;
+  --color-warm-grey: #ECEAE6;
+  --color-soft-grey: #F5F5F3;
+  --color-espresso: #2D2723;
+  --color-charcoal-brown: #3C3530;
+  --color-warm-brown: #5C534B;
+  --color-taupe: #786E65;
+  --color-stone: #9E958C;
+  --color-caramel: #B88B58;
+  --color-caramel-hover: #A07444;
+  --color-caramel-light: #F7EFE6;
+  --color-pastel-sage: #E2EAE2;
+  --color-pastel-sage-text: #4A634E;
+  --color-pastel-rose: #F9EBEA;
+  --color-pastel-rose-text: #874F4C;
+  --color-pastel-blue: #E7EDF3;
+  --color-pastel-blue-text: #4C657E;
+  --color-pastel-peach: #FAEDE5;
+  --color-pastel-peach-text: #8C5F43;
+  
+  --shadow-warm-xs: 0 1px 2px rgba(45, 39, 35, 0.04);
+  --shadow-warm-sm: 0 1px 3px rgba(45, 39, 35, 0.06), 0 1px 2px rgba(45, 39, 35, 0.04);
+  --shadow-warm-md: 0 4px 14px rgba(45, 39, 35, 0.07);
+  --shadow-warm-lg: 0 10px 25px -4px rgba(45, 39, 35, 0.09);
+  --shadow-warm-xl: 0 20px 35px -6px rgba(45, 39, 35, 0.11);
+}
+
+:root {
+  --bg-primary: #FAF7F2;
+  --bg-surface: #FFFDF9;
+  --bg-secondary: #F4EFEA;
+  --bg-accent: #E8DFD8;
+  
+  --text-primary: #2D2723;
+  --text-secondary: #5C534B;
+  --text-muted: #786E65;
+  --text-subtle: #9E958C;
+  
+  --border-light: #E8DFD8;
+  --border-focus: #B88B58;
+  --border-divider: #ECEAE6;
+  
+  --accent-caramel: #B88B58;
+  --accent-caramel-hover: #A07444;
+  
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-2xl: 1.5rem;
+  --radius-full: 9999px;
+  
+  --transition-fast: 150ms cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-normal: 250ms cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-slow: 350ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Global resets & typography */
+html {
+  scroll-behavior: smooth;
+  color-scheme: light;
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Focus styles for accessibility (no black outline) */
+:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
+}
+
+/* Maintain proper aspect ratio and fit without distortion */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Custom scrollbars matching warm palette */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #FAF7F2;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #DDD4CA;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #C4B9AD;
+}
+
+/* Mobile 2-column product grid rule utility */
+.product-grid-two-column {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.625rem;
+}
+
+@media (min-width: 640px) {
+  .product-grid-two-column {
+    gap: 0.875rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .product-grid-two-column {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.25rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .product-grid-two-column {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1.5rem;
+  }
+}
+
+@media (min-width: 1440px) {
+  .product-grid-two-column {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 1.5rem;
+  }
+}
